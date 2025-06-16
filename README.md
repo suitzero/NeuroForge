@@ -1,62 +1,35 @@
-# NeuroForge
+# JSFlow: A JAX/XLA-inspired framework for JavaScript/TypeScript
 
-NeuroForge is a high-performance compiler designed to optimize and map machine learning workloads onto DPU and NPU hardware. It translates complex neural operations into low-level instructions tailored for maximum efficiency, enabling fast, power-aware inference on edge and embedded systems. Whether you're building next-gen AR/VR, robotics, or intelligent networking applications, NeuroForge bridges the gap between high-level ML frameworks and specialized silicon.
+JSFlow is an experimental project aimed at exploring the creation of a numerical computing and machine learning framework for JavaScript and TypeScript, drawing inspiration from the capabilities of Python's JAX and XLA.
 
-## Core Components
+## Vision
 
-NeuroForge is comprised of the following core components:
+The long-term vision for JSFlow includes:
 
-*   **Parser:** Responsible for reading the input neural network model (e.g., ONNX, TensorFlow Lite) and translating it into an internal representation (IR) that the compiler can understand.
-*   **Optimizer:** This component takes the IR and applies a series of hardware-agnostic and hardware-specific optimizations. This includes operations like layer fusion, operator scheduling, memory layout optimization, and quantization to improve the model's performance and reduce its footprint.
-*   **Hardware Abstraction Layer (HAL):** The HAL provides a standardized interface for the compiler to interact with various DPU (Data Processing Unit) and NPU (Neural Processing Unit) backends. It abstracts away the specific details of each hardware target.
-*   **Code Generator:** This final component takes the optimized IR and, using the HAL, generates low-level, hardware-specific instructions or executables that can be run on the target DPU/NPU.
+*   **Efficient Numerical Operations:** A robust library for multi-dimensional array (tensor) operations.
+*   **Composable Function Transformations:**
+    *   Automatic differentiation (`grad`).
+    *   Just-In-Time (JIT) compilation to optimized JavaScript or WebAssembly (`jit`).
+    *   Vectorization (`vmap`) and parallelization (`pmap`) capabilities.
+*   **Hardware Acceleration:** Leveraging WebGPU for execution on GPUs where available, and efficient CPU execution via optimized JavaScript or WebAssembly.
+*   **Extensible IR:** A well-defined Intermediate Representation (IR) to enable powerful optimizations and target various backends.
 
-## Internal Representation (IR)
+## Current Status
 
-The NeuroForge Internal Representation is a graph-based data structure designed to capture the computational graph of a neural network model. It allows for various transformations and optimizations before code generation. The main components of the IR are:
+This project is in its very early stages. We are currently setting up the foundational project structure, including:
 
-*   **`Graph`**:
-    *   The main container for the entire model representation.
-    *   Attributes:
-        *   `name`: Name of the model.
-        *   `inputs`: A list of `TensorNode`s representing the primary inputs to the model.
-        *   `outputs`: A list of `TensorNode`s representing the primary outputs of the model.
-        *   `nodes`: A list of all `OperatorNode`s in the graph, typically in a topologically sorted order.
+*   TypeScript configuration.
+*   Basic IR data structures.
+*   Exploring core concepts for function tracing and transformation.
 
-*   **`TensorNode`**:
-    *   Represents a data tensor within the graph. This can be a model input, an operator's output, a constant weight, or a bias.
-    *   Attributes:
-        *   `id`: A unique identifier for this tensor node within the graph.
-        *   `name`: A human-readable name for the tensor (e.g., "input_image", "conv1_weights").
-        *   `shape`: A tuple or list representing the dimensions of the tensor (e.g., `(1, 3, 224, 224)`).
-        *   `dtype`: The data type of the tensor's elements (e.g., "float32", "int8").
-        *   `producer`: (Optional) The `OperatorNode` that produces this tensor.
-        *   `consumers`: (Optional) A list of `OperatorNode`s that consume this tensor.
+## Getting Started (Placeholder)
 
-*   **`OperatorNode`**:
-    *   Represents a computational operation in the model (e.g., convolution, ReLU, matrix multiplication).
-    *   Attributes:
-        *   `id`: A unique identifier for this operator node within the graph.
-        *   `name`: A human-readable name for the operator (e.g., "conv_layer1", "activation_relu3").
-        *   `op_type`: A string indicating the type of operation (e.g., "Conv2D", "ReLU", "MatMul").
-        *   `inputs`: A list of `TensorNode`s that are inputs to this operation.
-        *   `outputs`: A list of `TensorNode`s that are outputs from this operation.
-        *   `attributes`: A dictionary containing operation-specific parameters (e.g., stride and padding for a convolution, axis for a reduction).
+(Instructions on how to build, test, and use the library will be added here as the project develops.)
 
-### Graph Manipulation and Validation
+## Contributing
 
-The `Graph` class provides several methods for inspection, manipulation, and validation:
+(Contribution guidelines will be added as the project matures.)
 
-*   **Adding Elements**: `add_tensor(tensor: TensorNode)` and `add_operator(operator: OperatorNode)` are used to build the graph. `add_operator` also updates tensor producer/consumer links.
-*   **Retrieving Elements**:
-    *   `get_tensor(id: TensorId)` and `get_operator(id: OperatorId)` retrieve elements by their unique ID.
-    *   `get_tensor_by_name(name: str)` and `get_operator_by_name(name: str)` allow retrieval by human-readable names.
-    *   `get_graph_inputs()` and `get_graph_outputs()` provide lists of the primary input and output `TensorNode`s.
-*   **Removing Elements**:
-    *   `remove_operator(operator_id: OperatorId)` removes an operator and updates the consumer lists of its input tensors. It also clears the producer field for its output tensors.
-*   **Graph Traversal**:
-    *   `topologically_sort_operators() -> List[OperatorId]` returns a list of operator IDs in a topologically valid execution order (based on Kahn's algorithm). This is crucial for many compiler passes.
-*   **Validation**:
-    *   `is_valid() -> bool` performs several integrity checks, such as ensuring all tensor/operator references are valid and that producer/consumer relationships are consistent. This is useful for debugging graph transformations.
+---
 
-These methods provide a basic toolkit for programmatically constructing, modifying, and verifying the IR graph.
+*This project is experimental and under active development. Features and APIs are subject to change.*
