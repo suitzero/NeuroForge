@@ -42,3 +42,21 @@ The NeuroForge Internal Representation is a graph-based data structure designed 
         *   `inputs`: A list of `TensorNode`s that are inputs to this operation.
         *   `outputs`: A list of `TensorNode`s that are outputs from this operation.
         *   `attributes`: A dictionary containing operation-specific parameters (e.g., stride and padding for a convolution, axis for a reduction).
+
+### Graph Manipulation and Validation
+
+The `Graph` class provides several methods for inspection, manipulation, and validation:
+
+*   **Adding Elements**: `add_tensor(tensor: TensorNode)` and `add_operator(operator: OperatorNode)` are used to build the graph. `add_operator` also updates tensor producer/consumer links.
+*   **Retrieving Elements**:
+    *   `get_tensor(id: TensorId)` and `get_operator(id: OperatorId)` retrieve elements by their unique ID.
+    *   `get_tensor_by_name(name: str)` and `get_operator_by_name(name: str)` allow retrieval by human-readable names.
+    *   `get_graph_inputs()` and `get_graph_outputs()` provide lists of the primary input and output `TensorNode`s.
+*   **Removing Elements**:
+    *   `remove_operator(operator_id: OperatorId)` removes an operator and updates the consumer lists of its input tensors. It also clears the producer field for its output tensors.
+*   **Graph Traversal**:
+    *   `topologically_sort_operators() -> List[OperatorId]` returns a list of operator IDs in a topologically valid execution order (based on Kahn's algorithm). This is crucial for many compiler passes.
+*   **Validation**:
+    *   `is_valid() -> bool` performs several integrity checks, such as ensuring all tensor/operator references are valid and that producer/consumer relationships are consistent. This is useful for debugging graph transformations.
+
+These methods provide a basic toolkit for programmatically constructing, modifying, and verifying the IR graph.
